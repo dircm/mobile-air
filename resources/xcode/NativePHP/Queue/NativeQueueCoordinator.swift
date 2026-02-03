@@ -203,6 +203,7 @@ final class NativeQueueCoordinator {
             let jobId = jobData?["id"] as? String ?? "unknown"
             let jobName = jobData?["name"] as? String ?? "unknown"
             let queue = jobData?["queue"] as? String ?? "default"
+            let durationMs = json["duration_ms"] as? Int ?? 0
 
             // Check for error (job failed but was processed)
             if let error = json["error"] as? [String: Any] {

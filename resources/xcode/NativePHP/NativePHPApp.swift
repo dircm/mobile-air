@@ -17,6 +17,7 @@ public func pipe_php_output(_ cString: UnsafePointer<CChar>?) {
 struct NativePHPApp: App {
     @UIApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
     @StateObject private var appState = AppState.shared
+    @Environment(\.scenePhase) private var scenePhase
 
     static var shared: NativePHPApp?
 
@@ -116,6 +117,35 @@ struct NativePHPApp: App {
                     }
                 }
             }
+            .onChange(of: scenePhase) { oldPhase, newPhase in
+                handleScenePhaseChange(from: oldPhase, to: newPhase)
+            }
+        }
+    }
+
+    /// Handle app lifecycle transitions for queue processing handoff.
+    ///
+    /// When the app enters background, we pause foreground processing and schedule
+    /// a background task. When returning to foreground, we cancel any pending
+    /// background task and resume foreground processing.
+    private func handleScenePhaseChange(from oldPhase: ScenePhase, to newPhase: ScenePhase) {
+        switch newPhase {
+        case .active:
+            DebugLogger.shared.log("📱 App became active - resuming foreground queue processing")
+            BackgroundQueueWorker.shared.cancelPendingTask()
+            NativeQueueCoordinator.shared.resume()
+
+        case .background:
+            DebugLogger.shared.log("📱 App entered background - scheduling background queue processing")
+            NativeQueueCoordinator.shared.pause()
+            BackgroundQueueWorker.shared.scheduleIfNeeded()
+
+        case .inactive:
+            // Transitional state, no action needed
+            break
+
+        @unknown default:
+            break
         }
     }
 

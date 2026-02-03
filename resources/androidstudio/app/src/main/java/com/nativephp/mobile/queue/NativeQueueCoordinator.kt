@@ -209,6 +209,7 @@ class NativeQueueCoordinator private constructor() {
             val jobId = jobData?.optString("id", "unknown") ?: "unknown"
             val jobName = jobData?.optString("name", "unknown") ?: "unknown"
             val queue = jobData?.optString("queue", "default") ?: "default"
+            val durationMs = json.optInt("duration_ms", 0)
 
             // Check for error (job failed but was processed)
             val error = json.optJSONObject("error")

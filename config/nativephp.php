@@ -294,6 +294,31 @@ return [
 
         // How often to poll when queue is empty (milliseconds)
         'poll_interval' => env('NATIVEPHP_QUEUE_POLL_INTERVAL', 2000),
+
+        /*
+        |--------------------------------------------------------------------------
+        | Background Queue Processing
+        |--------------------------------------------------------------------------
+        |
+        | Configure background queue processing when the app is not in the foreground.
+        | Jobs are processed using iOS BGTaskScheduler and Android WorkManager.
+        |
+        | Note: Background processing is best-effort and subject to OS constraints:
+        | - iOS: ~30 seconds of processing time, system-controlled scheduling
+        | - Android: Minimum 15-minute intervals, up to 10 minutes execution time
+        |
+        */
+        'background' => [
+            // Enable background queue processing
+            'enabled' => env('NATIVEPHP_QUEUE_BACKGROUND_ENABLED', true),
+
+            // Minimum interval between background processing sessions (minutes)
+            // Android enforces minimum 15 minutes; iOS is system-controlled
+            'interval' => env('NATIVEPHP_QUEUE_BACKGROUND_INTERVAL', 15),
+
+            // Maximum jobs to process per background session
+            'max_jobs_per_session' => env('NATIVEPHP_QUEUE_BACKGROUND_MAX_JOBS', 50),
+        ],
     ],
 
     /*

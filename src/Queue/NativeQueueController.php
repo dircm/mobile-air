@@ -135,6 +135,11 @@ class NativeQueueController
                     'batch_size' => config('nativephp.queue.batch_size', 10),
                     'poll_interval' => config('nativephp.queue.poll_interval', 2000),
                 ],
+                'background' => [
+                    'enabled' => config('nativephp.queue.background.enabled', true),
+                    'interval' => config('nativephp.queue.background.interval', 15),
+                    'max_jobs_per_session' => config('nativephp.queue.background.max_jobs_per_session', 50),
+                ],
             ]);
 
         } catch (Throwable $e) {
